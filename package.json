@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "fastify": "^4.21.0",
-    "fastify-http-proxy": "^8.0.0",
+    "fastify-http-proxy": "^6.2.1",
     "dotenv": "^16.3.1"
   },
   "engines": {
