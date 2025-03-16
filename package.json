@@ -1,0 +1,17 @@
+{
+  "name": "fastify-proxy",
+  "version": "1.0.0",
+  "description": "A simple web proxy using Fastify",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "fastify": "^4.21.0",
+    "fastify-http-proxy": "^8.0.0",
+    "dotenv": "^16.3.1"
+  },
+  "engines": {
+    "node": ">=16"
+  }
+}
