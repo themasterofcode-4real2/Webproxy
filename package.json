@@ -1,17 +1,19 @@
 {
-  "name": "fastify-proxy",
+  "name": "web-proxy",
   "version": "1.0.0",
-  "description": "A simple web proxy using Fastify",
+  "description": "A simple web proxy to display content from proxysite.com",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "fastify": "^3.0.0",
-    "fastify-http-proxy": "^6.2.1",
-    "dotenv": "^16.3.1"
+    "axios": "^1.3.3",
+    "dotenv": "^16.0.3",
+    "fastify": "^4.21.0"
   },
   "engines": {
-    "node": ">=16"
-  }
+    "node": ">=16.0.0"
+  },
+  "author": "",
+  "license": "MIT"
 }
