@@ -37,7 +37,7 @@ fastify.get('/style.css', (req, reply) => {
     `);
 });
 
-// Serve the main HTML page
+// Serve the main HTML page (without conflict with proxy)
 fastify.get('/', (req, reply) => {
     reply.type('text/html').send(`
         <!DOCTYPE html>
@@ -75,7 +75,7 @@ fastify.get('/', (req, reply) => {
     `);
 });
 
-// Proxy route
+// Proxy route (make sure it's a distinct route)
 fastify.register(proxy, {
     upstream: 'https://example.com', // Default target URL
     rewritePrefix: '/proxy',
