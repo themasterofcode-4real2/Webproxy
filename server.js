@@ -1,97 +1,33 @@
 const Fastify = require('fastify');
-const proxy = require('fastify-http-proxy');
-require('dotenv').config();
-
+const axios = require('axios');
 const fastify = Fastify();
 
-// Serve the main HTML page with merged CSS
-fastify.get('/', (req, reply) => {
-    reply.type('text/html').send(`
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Fast Proxy</title>
-            <style>
-                body {
-                    font-family: Arial, sans-serif;
-                    background-color: #f4f4f4;
-                    text-align: center;
-                    margin: 50px;
-                }
-                .container {
-                    background: white;
-                    padding: 20px;
-                    border-radius: 10px;
-                    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-                    width: 300px;
-                    margin: auto;
-                }
-                input {
-                    width: 80%;
-                    padding: 10px;
-                    margin-top: 10px;
-                }
-                button {
-                    padding: 10px;
-                    margin-top: 10px;
-                    background-color: blue;
-                    color: white;
-                    border: none;
-                    cursor: pointer;
-                }
-            </style>
-        </head>
-        <body>
-            <div class="container">
-                <h1>Fast Proxy</h1>
-                <input type="text" id="urlInput" placeholder="Enter website URL">
-                <button onclick="proxyRequest()">Go</button>
-            </div>
-            <script>
-                function proxyRequest() {
-                    let url = document.getElementById('urlInput').value;
-                    
-                    if (!url) {
-                        alert("Please enter a valid URL.");
-                        return;
-                    }
+fastify.get('/', async (req, reply) => {
+    try {
+        // Generate random number between 1 and 20 for the proxy URL
+        const randomNumber = Math.floor(Math.random() * 20) + 1;
+        const proxyUrl = `https://us${randomNumber}.proxysite.com`;
 
-                    if (!url.startsWith("http://") && !url.startsWith("https://")) {
-                        url = "https://" + url;
-                    }
+        // Make the request to the proxied website
+        const response = await axios.get(proxyUrl, {
+            headers: {
+                'User-Agent': req.headers['user-agent'], // Send the same user agent as the client
+                'Accept': 'text/html', // Ensure it's HTML content
+                'Accept-Language': 'en-US,en;q=0.5' // Optional: Customize as needed
+            }
+        });
 
-                    window.location.href = "/proxy?url=" + encodeURIComponent(url);
-                }
-            </script>
-        </body>
-        </html>
-    `);
-});
-
-// Proxy route
-fastify.register(proxy, {
-    upstream: 'https://example.com', // Default target URL
-    rewritePrefix: '/proxy',
-    async preHandler(req, reply) {
-        let target = req.query.url;
-        if (!target) {
-            return reply.status(400).send({ error: 'Missing target URL' });
-        }
-
-        // Auto-add "https://" if missing
-        if (!target.startsWith("http://") && !target.startsWith("https://")) {
-            target = `https://${target}`;
-        }
-
-        req.raw.url = target;
+        // Serve the proxied content as HTML
+        reply.type('text/html').send(response.data);
+    } catch (error) {
+        console.error('Error fetching proxy content:', error);
+        reply.status(500).send('Internal Server Error');
     }
 });
 
-// Start server
+// Start the Fastify server
 const PORT = process.env.PORT || 3000;
-fastify.listen({ port: PORT, host: '0.0.0.0' }, (err, address) => {
+fastify.listen(PORT, '0.0.0.0', (err, address) => {
     if (err) {
         console.error(err);
         process.exit(1);
